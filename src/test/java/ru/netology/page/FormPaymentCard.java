@@ -1,5 +1,6 @@
 package ru.netology.page;
 
+import com.codeborne.selenide.Selectors;
 import com.codeborne.selenide.SelenideElement;
 import ru.netology.card.CardsBank;
 
@@ -8,6 +9,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
+
 
 public class FormPaymentCard {
     public static SelenideElement formOfPaymentByCard = $x("//h3[(text()='Оплата по карте')]");
@@ -42,8 +44,10 @@ public class FormPaymentCard {
     }
 
     public void operationWasApprovedByBank(){
+
         successNotification.shouldBe(visible, Duration.ofSeconds(15));
         successNotificationCloseButton.click();
+
         successNotification.shouldBe(hidden);
         }
 
@@ -54,16 +58,16 @@ public class FormPaymentCard {
     }
 
     public void InvalidFormat(){
-        $(".input__sub").find(String.valueOf(exactText("Неверный формат"))).shouldBe(visible);
+        $(byText("Неверный формат")).shouldBe(visible);
     }
     public void FieldIsRequiredToFillIn(){
-        $(".input__sub").find(String.valueOf(exactText("Поле обязательно для заполнения"))).shouldBe(visible);
+        $(byText("Поле обязательно для заполнения")).shouldBe(visible);
     }
     public void ValidityPeriodOfCardIsSpecifiedIncorrectly(){
-        $(".input__sub").find(String.valueOf(exactText("Неверно указан срок действия карты"))).shouldBe(visible);
+        $(byText("Неверно указан срок действия карты")).shouldBe(visible);
     }
     public void CardExpired(){
-        $(".input__sub").find(String.valueOf(exactText("Истёк срок действия карты"))).shouldBe(visible);
+        $(byText("Истёк срок действия карты")).shouldBe(visible);
     }
 
 }

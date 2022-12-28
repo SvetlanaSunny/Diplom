@@ -45,6 +45,7 @@ public class DebitTest {
         debitCardPay.operationWasApprovedByBank();
         var cardStatus = getDebitCardStatus();
         assertEquals("APPROVED", cardStatus);
+
     }
 
 
