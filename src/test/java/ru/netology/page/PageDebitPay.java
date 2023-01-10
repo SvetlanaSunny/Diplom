@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Selenide.$x;
 
 public class PageDebitPay extends FormPaymentCard {
 
-    public PageDebitPay(){
+    public PageDebitPay() {
         super();
         formOfPaymentByCard.shouldBe(visible);
     }
