@@ -6,11 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.BankCardDataHalper;
 import ru.netology.page.MainPage;
-
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.netology.data.SQLHelper.cleanDatabase;
-import static ru.netology.data.SQLHelper.getDebitCardStatus;
+import static ru.netology.data.SQLHelper.*;
+
 
 public class DebitTest {
     private static MainPage mainPage;
@@ -18,7 +17,6 @@ public class DebitTest {
     @BeforeAll
     public static void setUpAll() {
         SelenideLogger.addListener("allure", new AllureSelenide());
-
     }
 
     @AfterAll
@@ -46,9 +44,12 @@ public class DebitTest {
         debitCardPay.operationWasApprovedByBank();
         var cardStatus = getDebitCardStatus();
         assertEquals("APPROVED", cardStatus);
+
+        var recordAmount = getDbRecordAmount();
+        assertEquals(4500000, recordAmount);
     }
 
-    // Карта со статусом DECLINED, остальные поля заполнены валидными данными // bug
+    // Карта со статусом DECLINED, остальные поля заполнены валидными данными
     @Test
     public void testDebitPayInValidCard() {
         var mainPage = new MainPage();
@@ -66,7 +67,7 @@ public class DebitTest {
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getIncompleteNumberCardValuesMonthYear());
         debitCardPay.InvalidFormat();
-            }
+    }
 
     // Поле номер карты не заполнено. Остальные поля валидными данными
     @Test
@@ -74,8 +75,8 @@ public class DebitTest {
         var mainPage = new MainPage();
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getEmptyNumberCardValuesMonthYear());
-        debitCardPay.InvalidFormat();
-          }
+        debitCardPay.FieldIsRequiredToFillIn();
+    }
 
     // Поле номер месяца заполнено одной цифрой, остальные поля заполнены валидными данными
     @Test
@@ -84,7 +85,7 @@ public class DebitTest {
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getValidCardValuesInvalidMonthYear());
         debitCardPay.InvalidFormat();
-         }
+    }
 
     // Поле номер месяца заполнено двумя нулями
     @Test
@@ -102,7 +103,7 @@ public class DebitTest {
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getValidCardValuesUnrealMonthYear());
         debitCardPay.ValidityPeriodOfCardIsSpecifiedIncorrectly();
-            }
+    }
 
     // Поле номер месяца заполнен месяцем меньше текущего, будущего года
     @Test
@@ -113,6 +114,9 @@ public class DebitTest {
         debitCardPay.operationWasApprovedByBank();
         var cardStatus = getDebitCardStatus();
         assertEquals("APPROVED", cardStatus);
+
+        var recordAmount = getDbRecordAmount();
+        assertEquals(4500000, recordAmount);
     }
 
     // Поле номер месяца не заполнен
@@ -121,16 +125,16 @@ public class DebitTest {
         var mainPage = new MainPage();
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getCardValidValuesEmptyMonthNextYear());
-        debitCardPay.InvalidFormat();
+        debitCardPay.FieldIsRequiredToFillIn();
     }
 
-     // Поле год не заполнено
+    // Поле год не заполнено
     @Test
     public void testDebitPayMonthEmptyYear() {
         var mainPage = new MainPage();
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getCardValidValuesMonthEmptyYear());
-        debitCardPay.InvalidFormat();
+        debitCardPay.FieldIsRequiredToFillIn();
     }
 
     // Поле год заполнено двумя нулями
@@ -229,7 +233,7 @@ public class DebitTest {
         var mainPage = new MainPage();
         var debitCardPay = mainPage.openPageDebitPay();
         debitCardPay.buyForm(BankCardDataHalper.getEmptyCvcCardValidValuesMonthYear());
-        debitCardPay.InvalidFormat();
+        debitCardPay.FieldIsRequiredToFillIn();
     }
 
 }
